@@ -1,0 +1,135 @@
+------------------------------------------------------------
+1. Create Database and connect to it
+------------------------------------------------------------
+psql --username=freecodecamp --dbname=postgres;
+
+CREATE DATABASE universe;
+
+\c universe
+
+------------------------------------------------------------
+2. Create tables as required conditions and setting PK and UNIQUE constraints
+------------------------------------------------------------
+CREATE TABLE galaxy(galaxy_id SERIAL PRIMARY KEY, 
+		    name VARCHAR(30) UNIQUE NOT NULL, 
+		    age_in_millions_of_years INT, 
+		    distance_from_milky_way NUMERIC(5,2), 
+                    description TEXT);
+
+
+CREATE TABLE star(star_id SERIAL PRIMARY KEY, 
+		  name VARCHAR(30) UNIQUE NOT NULL, 
+		  age_in_millions_of_years INT, 
+		  is_in_milkyway BOOLEAN, 
+		  distance_from_earth NUMERIC(5,2), 
+		  gravity FLOAT);
+
+
+CREATE TABLE planet(planet_id SERIAL PRIMARY KEY,
+ 		    name VARCHAR(30) UNIQUE NOT NULL, 
+		    has_life BOOLEAN, 
+		    has_water BOOLEAN, 
+		    diameter FLOAT);
+
+
+CREATE TABLE moon(moon_id SERIAL PRIMARY KEY, 
+		  name VARCHAR(30) UNIQUE NOT NULL, 
+		  gravity FLOAT, 
+		  area FLOAT, 
+		  age_in_millions_of_years INT);
+
+
+CREATE TABLE asteroid(asteroid_id SERIAL PRIMARY KEY, 
+		      name VARCHAR(30) UNIQUE NOT NULL, 
+		      diameter FLOAT,
+		      dangerous_to_earth BOOLEAN,
+		      dicovery_date DATE);
+
+------------------------------------------------------------
+3. Setting Foreign Keys
+------------------------------------------------------------
+
+ALTER TABLE star ADD COLUMN galaxy_id INT NOT NULL REFERENCES galaxy(galaxy_id);
+
+ALTER TABLE planet ADD COLUMN star_id INT NOT NULL REFERENCES star(star_id);
+
+ALTER TABLE moon ADD COLUMN planet_id INT NOT NULL REFERENCES planet(planet_id);
+
+------------------------------------------------------------
+4. Fill the tables
+------------------------------------------------------------
+INSERT INTO galaxy(name, age_in_millions_of_years, distance_from_milkyway, description) VALUES
+	('Galaxy 1', 100, 302.82, 'The galaxy containing the Sun'),
+	('Galaxy 2', 350, 102.17, 'Two colliding galaxies'),
+	('Galaxy 3', 106, 402.54, 'Looks are similar to a butterfly.'),
+	('Galaxy 4', 236, 106.72, 'Appearance is similar to a mouse.'),
+	('Galaxy 5', 589, 307.42, 'Location in the southern celestial hemisphere'),
+	('Galaxy 6', 329, 425.53, 'This shape resulted from tidal interaction that drew out a long tidal tail.');
+
+
+INSERT INTO star(name, age_in_millions_of_years, is_in_milkyway, distance_from_earth, gravity, galaxy_id) VALUES
+	('Star 1', 895, true, 132.78, 695.4, 1),
+	('Star 2', 457, false, 822.47, 832.5, 5),
+	('Star 3', 750, true, 144.72, 426.1, 1),
+	('Star 4', 235, false, 756.21, 325.4, 3),
+	('Star 5', 633, false, 362.19, 497.5, 6),
+	('Star 6', 329, true, 201.36, 987.2, 1);
+
+INSERT INTO planet(name, has_life, has_water, diameter, star_id) VALUES
+	('Planet 1', true, true, 85.4, 1),
+	('Planet 2', false, false, 52.7, 2),
+	('Planet 3', false, false, 96.4, 5),
+	('Planet 4', true, true, 29.6, 2),
+	('Planet 5', false, false, 77.5, 5),
+	('Planet 6', false, false, 13.9, 4),
+	('Planet 7', false, true, 87.2, 6),
+	('Planet 8', false, false, 31.3, 2),
+	('Planet 9', true, true, 28.2, 3),
+	('Planet 10', false, false, 80.9, 3),
+	('Planet 11', false, false, 45.1, 6),
+	('Planet 12', false, false, 62.3, 4);	
+
+INSERT INTO moon(name, gravity, area, age_in_millions_of_years, planet_id) VALUES
+	('Moon 1', 5.2, 65.6, 45, 5),
+	('Moon 2', 9.1, 14.9, 21, 11),
+	('Moon 3', 6.4, 13.7, 37, 6),
+	('Moon 4', 4.9, 98.1, 11, 3),
+	('Moon 5', 2.8, 42.6, 93, 12),
+	('Moon 6', 7.9, 53.7, 46, 8),
+	('Moon 7', 19.7, 21.7, 27, 3),
+	('Moon 8', 9.8, 10.8, 18, 10),
+	('Moon 9', 3.8, 52.3, 98, 5),
+	('Moon 10', 11.3, 33.9, 155, 4),
+	('Moon 11', 5.4, 62.7, 24, 9),
+	('Moon 12', 17.5, 18.3, 87, 7),
+	('Moon 13', 8.7, 64.2, 163, 9),
+	('Moon 14', 6.7, 33.6, 19, 1),
+	('Moon 15', 7.3, 19.7, 51, 8),
+	('Moon 16', 4.1, 25.8, 47, 11),
+	('Moon 17', 21.4, 29.4, 102, 3),
+	('Moon 18', 3.7, 87.7, 39, 2),
+	('Moon 19', 14.6, 61.2, 26, 12),
+	('Moon 20', 8.6, 16.3, 84, 7);
+
+INSERT INTO asteroid(name, diameter, dangerous_to_earth, discovery_date) VALUES
+	('Asteroid 1', 530.8, true, '1894-03-12'),
+	('Asteroid 2', 923.5, false, '1986-07-30'),
+	('Asteroid 3', 261.8, false, '1926-10-13');
+
+
+------------------------------------------------------------
+5. Compact sql db queries into universe.sql file
+------------------------------------------------------------
+pg_dump -cC --inserts -U freecodecamp universe > universe.sql
+
+
+
+
+
+
+
+
+
+
+
+
